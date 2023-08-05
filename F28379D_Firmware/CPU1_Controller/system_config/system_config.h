@@ -1,5 +1,5 @@
 /*
- * clocks.h
+ * system_config.h
  *
  *  Created on: 18/11/2022
  *      Author: Charley Shi
@@ -22,7 +22,7 @@
 
 // Clock scaling factors
 #if USE_PLL == 1 // See Section 3.7.6: Clock Source and PLL Setup in the TRM
-#define PLL_IMULT 60 // Integer multiplier between 0 and 127 inclusive
+#define PLL_IMULT 5 // Integer multiplier between 0 and 127 inclusive
 #define PLL_FMULT 0 // Fractional multiplier between 0 and 3 inclusive (actual multiplier is 0.25*PLL_FMULT)
 #endif
 #define SYSCLKDIV 2 // System clock divider of /2
@@ -30,7 +30,7 @@
 
 /* Clock frequencies: With the internal 10MHz oscillator and the above clock scaling factors:
  * OSCCLK = 10MHz
- * PLLRAWCLK = 10MHz * 60 / ((2 + 1) * (3+1)) = 10MHz * 5 = 50MHz
+ * PLLRAWCLK = 10MHz * 5 = 50MHz
  * PLLSYSCLK = 50MHz / 2 = 25MHz
  * LSPCLK = 25MHz / 2 = 12.5MHz
  *

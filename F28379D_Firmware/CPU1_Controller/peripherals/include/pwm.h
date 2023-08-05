@@ -11,26 +11,37 @@
 #define PERIPHERALS_INCLUDE_PWM_H_
 
 #include "system_config.h"
+#include <stdint.h>
 
 void ConfigPwm(); // Initializes all PWM modules
-void ConfigHalfBridgePWM(EPWM_Module module);
 
-#define SYMMETRICAL_PWM 1 // 0 = Fast PWM (up count or down count mode); 1 = symmetrical PWM (up-down count mode)
+typedef enum PWM_Count_Mode {
+    SYMMETRICAL_PWM, // Up-down count
+    DOWN_COUNT_PWM, // Down count
+    UP_COUNT_PWM // Up count
+} PWMCountMode;
 
-// Parameters of the PWM common to all three phases
-#define SWITCHING_FREQ 1000 // PWM frequency (Hz)
-#define EPWMCLK_PRESCALER 2 // HSPCLKDIV * CLKDIV
-#define TBCLK_FREQ (PLLSYSCLK/EPWMCLK_PRESCALER) // Time base clock frequency (Hz)
-#if SYMMETRICAL_PWM == 1
-#define EPWM_COUNTER_TOP (TBCLK_FREQ/(2*SWITCHING_FREQ)) // Assuming up-down count
-#else
-#define EPWM_COUNTER_TOP (TBCLK_FREQ/SWITCHING_FREQ - 1) // Assuming up count
-#endif
+#define HALFCYCLE_DB_CLOCKING_ENABLE 0 // 0 = Full Cycle clocking for dead band counters; 1 = Half Cycle clocking for dead band counters
 
-// DBRED holds the number of TBCLK cycles for the rising edge delay (RED). Similar for falling edge delay (FED)
-#define HALFCYCLE_DB_CLOCKING_ENABLE 1 // 0 = Full Cycle clocking for dead band counters; 1 = Half Cycle clocking for dead band counters
-#define DEAD_BAND_RED_US 0.5 // Rising edge delay for dead band (us)
-#define DEAD_BAND_FED_US 0.5 // Falling edge delay for dead band (us)
+class HalfBridgePWM {
+    private:
+        uint32_t base;
+        uint32_t timer_top; // For setting duty cycle
+        PWMCountMode countMode;
+        uint32_t tbclk_Hz;
 
+        void configClock(uint32_t frequency_Hz);
+        void configActionQualifiers();
+        void configDeadBand(uint32_t dead_time_ns);
+
+    public:
+        HalfBridgePWM(EPWM_Module module, uint32_t frequency_Hz, PWMCountMode count_mode, float dead_time_ns);
+        void setDutyCycle(float D);
+};
+
+// Global PWM modules for each phase. Making these global allows other files to update their duty cycles.
+extern HalfBridgePWM *phaseA;
+extern HalfBridgePWM *phaseB;
+extern HalfBridgePWM *phaseC;
 
 #endif /* PERIPHERALS_INCLUDE_PWM_H_ */

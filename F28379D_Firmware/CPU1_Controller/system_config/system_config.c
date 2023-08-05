@@ -1,5 +1,5 @@
 /*
- * system_config.c
+ * system_config.cpp
  *
  *  Created on: 18/11/2022
  *      Author: Charley Shi

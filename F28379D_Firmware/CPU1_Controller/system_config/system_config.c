@@ -54,13 +54,12 @@ void ConfigPllSysClock() {
 
     /* Step 4: Set the system clock divider using SYSCLKDIVSEL[PLLSYSCLKDIV] */
     ClkCfgRegs.SYSCLKDIVSEL.bit.PLLSYSCLKDIV = SYSCLKDIV >> 1;
-    ClkCfgRegs.SYSCLKDIVSEL.bit.PLLSYSCLKDIV_LSB = SYSCLKDIV & 1;
 
 #if USE_PLL == 1
-    /* Step 5: Set the IMULT, REFDIV, and ODIV simultaneously by writing 32-bit value in SYSPLLMULT at once.
+    /* Step 5: Set the IMULT and FMULT simultaneously by writing 32-bit value in SYSPLLMULT at once.
      * This will automatically enable the PLL. Be sure the settings for the multiplier and dividers
      * do not violate the frequency specifications defined in the datasheet. */
-    ClkCfgRegs.SYSPLLMULT.all = (Uint32)PLL_IMULT + ((Uint32)PLL_ODIV << 16) + ((Uint32)PLL_REFDIV << 24);
+    ClkCfgRegs.SYSPLLMULT.all = (Uint32)PLL_IMULT + ((Uint32)PLL_FMULT << 8);
 
 
     /* Step 6: Wait for PLL to lock by polling for lock status bit to go high, that is, SYSPLLSTS.LOCKS=1 */

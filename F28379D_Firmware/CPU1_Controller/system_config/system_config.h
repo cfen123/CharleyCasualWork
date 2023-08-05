@@ -12,7 +12,8 @@
 #ifndef INIT_H_
 #define INIT_H_
 
-#include <device.h> // Includes all files in f2837xD_includes (includes driverlib)
+#include <F2837xD_device.h> // Includes all files in f2837xD_includes
+#include <driverlib.h>
 
 #define USE_PLL 1 // 0 = Not using PLL clock; 1 = Using PLL clock
 
@@ -20,10 +21,9 @@
 #define DELAY_SIXTY_CYCLES asm(" RPT #60 || NOP")
 
 // Clock scaling factors
-#if USE_PLL == 1
-#define PLL_IMULT 60 // Integer multiplier of 60
-#define PLL_REFDIV 2 // Reference clock divider of 2 + 1 = 3
-#define PLL_ODIV 3 // Output clock divider of 3 + 1 = 4
+#if USE_PLL == 1 // See Section 3.7.6: Clock Source and PLL Setup in the TRM
+#define PLL_IMULT 60 // Integer multiplier between 0 and 127 inclusive
+#define PLL_FMULT 0 // Fractional multiplier between 0 and 3 inclusive (actual multiplier is 0.25*PLL_FMULT)
 #endif
 #define SYSCLKDIV 2 // System clock divider of /2
 #define LSPCLKDIVIDER 2
@@ -38,7 +38,7 @@
  */
 #define OSCCLK_FREQ_HZ 10000000UL // Oscillator frequency (Hz) for OSCCLK source chosen
 #if USE_PLL == 1
-#define PLLRAWCLK ((OSCCLK_FREQ_HZ * PLL_IMULT) / ((PLL_REFDIV + 1) * (PLL_ODIV + 1))) // Raw PLL clock frequency (Hz)
+#define PLLRAWCLK ((OSCCLK_FREQ_HZ * (PLL_IMULT + (float)0.25*PLL_FMULT)))  // Raw PLL clock frequency (Hz)
 #define PLLSYSCLK (PLLRAWCLK / SYSCLKDIV) // SYSCLK (PLLSYSCLK) frequency (Hz)
 #else
 #define PLLSYSCLK (OSCCLK_FREQ_HZ / SYSCLKDIV) // SYSCLK (PLLSYSCLK) frequency (Hz)

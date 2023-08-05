@@ -40,7 +40,7 @@
 // $
 //###########################################################################
 
-#include <device.h>     // F2837xD Headerfile Include File
+#include <F2837xD_device.h>     // F2837xD Headerfile Include File
 
 //---------------------------------------------------------------------------
 // Define Global Peripheral Variables:

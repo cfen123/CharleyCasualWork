@@ -1,5 +1,6 @@
 # DriverLib library 
 Source: `C2000Ware_4_03_00_00/driverlib/f2837xd/driverlib` 
+**Note**: `driverlib.h` is from `C2000Ware_4_03_00_00/device_support/f2837xd/common/include`
 
 I have added additional functions to the GPIO, ePWM and CPU timer files. The rest of this file will detail those functions. For these functions, detailed comments about the usage have been added in the code. 
 
